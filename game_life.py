@@ -52,6 +52,8 @@ def update(data):
   ttl.set_text('время ='+str(n)) #надпись со временем
   cont_life.set_text('в живых ='+str(np.count_nonzero(grid == ON))) #выводим кол-во живых
   n+=1 #увеличиваем счётчик
+  if n==total_time:
+      ani.event_source.stop()
   return [mat], ttl, cont_life
 #настраиваем анимацию
 fig, ax = plt.subplots()
