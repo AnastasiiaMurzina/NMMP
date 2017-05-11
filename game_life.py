@@ -62,12 +62,12 @@ def onClick(event):
 #настраиваем анимацию
 fig, ax = plt.subplots()
 fig.canvas.mpl_connect('button_press_event', onClick) #связываем нашу анимацию и событие остановки пользователем по клику
-mat = ax.matshow(grid, cmap=(color))
-ttl = ax.text(-0.3, 1., 'время', transform = ax.transAxes)
+mat = ax.matshow(grid, cmap=(color)) #устанавлиаем данные и цвет
+ttl = ax.text(-0.3, 1., 'время', transform = ax.transAxes) #подписи к осям
 cont_life = ax.text(-0.3, 0., 'в живых ', transform = ax.transAxes)
 ttl.set_text('')
 cont_life.set_text('')
-ani = animation.FuncAnimation(fig, update, interval=50,repeat = False)
+ani = animation.FuncAnimation(fig, update, interval=50,repeat = False) #запуск анимации
 #не выполнены условия остановки анимации, поэтому при остановке появляется ошибка AttributeError
 #сторчка ниже - попытка сохранить запись, но у меня не установлен ffmpeg... так что без понятия как это будет работать
 # ani.save('life.mp4', writer='ffmpeg', fps=2)
