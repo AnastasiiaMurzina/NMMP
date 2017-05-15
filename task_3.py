@@ -63,8 +63,7 @@ if type(point)==bool:
     dad = p4 - p1
     dbc = p3 - p2
     dbd = p4 - p2
-    #это условно работающее выражение для параллельных отрезков
-    print(min(list(map( lambda x: np.linalg.norm(x),[dac,dad,dbc,dbd]))))
+    print("Расстояние между прямыми = %.2f" %min(list(map( lambda x: np.linalg.norm(x),[dac,dad,dbc,dbd]))).append(abs(np.dot(dac, perp(p2-p1)))))
 
 elif (min(p1[0],p2[0])<=point[0]<=max(p1[0],p2[0]) and min(p1[1],p2[1])<=point[1]<=max(p1[1],p2[1])
     and min(p3[0],p4[0])<=point[0]<=max(p3[0],p4[0])and min(p3[1],p4[1])<=point[1]<=max(p3[1],p4[1])):
