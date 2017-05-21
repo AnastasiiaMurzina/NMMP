@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+import matplotlib as mpl
 import sys
+
 pause = False
 f=open(sys.argv[1],'r') #первым параметром считываем с консоли файл с начальным распределением
 total_time = int(sys.argv[2]) #втором - время игры
@@ -27,10 +28,15 @@ for i in range(N): #записываем массив из файла
         else: grid[i][j]=ON
 f.close()
 n=0 #временной счётчик
-
-def update(data):
-  global grid
-  global n
+fig = plt.figure()
+cmap = mpl.cm.get_cmap('gnuplot')
+ax = fig.add_subplot(111)
+# вызываем метод pcolor. Вводим пользовательскую раскраску через cmap
+cs = ax.pcolor(grid, cmap=cmap)
+ax.set_title(u'Начальное распределние, в живых %d' %np.count_nonzero(grid == ON))
+plt.show()
+# plt.savefig('init.png')
+while n!=total_time:
   newGrid = grid.copy() #глубокое копирование для нового состояния
   for i in range(N): #для каждой клетки провериям выполнения условий
     for j in range(M):
@@ -46,29 +52,13 @@ def update(data):
       else:#если он была мёртвой
         if total == 3:#то ей нужно 3 живых соседа, чтобы стать живой
           newGrid[i, j] = ON#иначе не меняем её состояние
-
-  mat.set_data(newGrid)#устанавливаем для показа новый массив значений
-  grid = newGrid#для следующего шага этот будет предыдущим
-  ttl.set_text('время ='+str(n)) #надпись со временем
-  cont_life.set_text('в живых ='+str(np.count_nonzero(grid == ON))) #выводим кол-во живых
+  grid=newGrid.copy()
   n+=1 #увеличиваем счётчик
-  if n==total_time or pause==True:
-      ani.event_source.stop()
-  return [mat], ttl, cont_life
+  fig = plt.figure()
+  ax = fig.add_subplot(111)
+  cs = ax.pcolor(grid, cmap=cmap)
 
-def onClick(event):
-    global pause
-    pause ^= True
-#настраиваем анимацию
-fig, ax = plt.subplots()
-fig.canvas.mpl_connect('button_press_event', onClick) #связываем нашу анимацию и событие остановки пользователем по клику
-mat = ax.matshow(grid, cmap=(color)) #устанавлиаем данные и цвет
-ttl = ax.text(-0.3, 1., 'время', transform = ax.transAxes) #подписи к осям
-cont_life = ax.text(-0.3, 0., 'в живых ', transform = ax.transAxes)
-ttl.set_text('')
-cont_life.set_text('')
-ani = animation.FuncAnimation(fig, update, interval=50,repeat = False) #запуск анимации
-#не выполнены условия остановки анимации, поэтому при остановке появляется ошибка AttributeError
-#сторчка ниже - попытка сохранить запись, но у меня не установлен ffmpeg... так что без понятия как это будет работать
-# ani.save('life.mp4', writer='ffmpeg', fps=2)
-plt.show()
+  ax.set_title(u'Время %d, в живых %d' %(n, np.count_nonzero(grid == ON)))
+  plt.show()
+  # plt.savefig('it_%d.png' %n)
+
