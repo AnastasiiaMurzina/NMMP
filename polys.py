@@ -27,27 +27,16 @@ def abs_borders(polygon): # находим крайние точки у мног
 
 
 def from_point(point, s1, s2):
-    a = s2[1]-s1[1]
-    b = s1[0]-s2[0]
-    c = -a*s1[0] -b*s1[1]#s2[0]*s1[1] - s2[1]*s1[0]
-    ab = a**2+b**2
-    pr_d = abs(a*point[0]+b*point[1]+c)/ab**0.5
-    # v = array(s2)-array(s1)
-    # u = array(s1) - array(point)
-    # x = v[0]*u[1]/norm(v)+point[0]
-    # y = -v[1]*u[0]/norm(v)+point[1]
-    # x, y =(v*u/norm(v))
-    # v =array([a, b])
-    # v /= norm(v)*pr_d
-    # v += point
-    x = (-b*(-b*point[0] + a*point[1])-a*c)/ab
-    y = (a*(-b*point[0] + a*point[1])-b*c)/ab
-    # if min(s1[0], s2[0]) < x < max(s1[0], s2[0]) and min(s1[1], s2[1]) < y < max(s1[1], s2[1]):
-    #     print(x, y)
-    return pr_d, x, y
-    # elif (s1[0]-point[0])**2+(s1[1]-point[1])**2 < (s2[0]-point[0])**2+(s2[1]-point[1])**2:
-    #     return (s1[0]-point[0])**2+(s1[1]-point[1])**2, s1[0], s1[1]
-    # return (s2[0] - point[0]) ** 2 + (s2[1] - point[1]) ** 2, s2[0], s2[1]
+    v = array(s2) - array(s1)
+    u = array(s1) - array(point)
+    t = -(v[0]*u[0]+v[1]*u[1])/norm(v)**2
+    if t < 0:
+        p = array(s1)
+    elif t > 1:
+        p = array(s2)
+    else:
+        p = (1-t)*array(s1)+t*array(s2)
+    return p[0], p[1], norm(array(point-p))
 
 
 def between_segments(s1, s2, e1, e2):
@@ -151,11 +140,13 @@ def checker(a, b):
     else:
         print('Outside')
         ps = []
-        for j, i in product(range(len(a)-1), range(len(b)-1)):
-            # bs = between_segments(a[i], a[i + 1], b[j], b[j + 1])
-            ix = from_point(b[i], a[j], a[j+1])
-            if ix:
-                ps.append([b[i], from_point(b[i], a[j], a[j+1])])
+        for i, j in product(range(len(a)-1), range(len(b)-1)):
+            bs = between_segments(a[i], a[i + 1], b[j], b[j + 1])
+            # ix = from_point(a[i], b[j], b[j+1])
+            # if ix:
+            #     ps.append(from_point(a[i], b[j], b[j+1]))
+            if bs:
+                ps.append(bs)
         return ps
             #
             # if bs:
@@ -172,10 +163,18 @@ if __name__ == '__main__':
     ps = (checker(a, b))
     # p1, p2 = (checker(a, b))
     print(ps)
-    # for i in ps:
-    i = ps[1]
-    plt.plot([i[0][0], i[1][0]], [i[0][1], i[1][1]])
-        # plt.plot([i[1][0], i[2][0]], [i[1][1], i[2][1]])
+    for i in ps:
+    # ix = 1
+    # i = ps[ix]
+    # print(i)
+
+    # plt.scatter(a[ix][0], a[ix][1])
+    # plt.plot([b[ix][0], b[ix+1][0]], [b[ix][1], b[ix+1][1]])
+    # plt.plot([a[ix][0], i[1]], [a[ix][1], i[2]])
+    # plt.plot([i[1][0], i[2][0]], [i[0][1], i[1][1]])
+    # plt.scatter(a[0][0], a[0][1])
+    # plt.plot([b[0][0], b[1][0]], [b[0][1], b[1][1]])
+        plt.plot([i[1][0], i[2][0]], [i[1][1], i[2][1]])
     # plt.plot([p1[0], p2[0]], [p1[1], p2[1]])
     plt.plot([i[0] for i in a], [i[1] for i in a])
     plt.plot([i[0] for i in b], [i[1] for i in b])
